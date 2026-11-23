@@ -10,9 +10,10 @@ function escapeHtml(value) {
   })[char]);
 }
 
-function assetUrl(path) {
+function assetUrl(path, test = activeTest) {
   if (!path) return "";
-  return new URL(path, document.baseURI).href;
+  const base = test?._basePath || "";
+  return new URL(base + path, document.baseURI).href;
 }
 
 function applyPageBackground(path) {
@@ -32,7 +33,7 @@ function renderCatalog() {
     <section class="test-list" aria-label="доступные тесты">
       ${published.length ? published.map(test => `
         <article class="test-card">
-          ${test.assets?.cover ? `<div class="test-card-cover" style="background-image:linear-gradient(90deg,rgba(0,0,0,.12),rgba(0,0,0,.02)),url('${escapeHtml(assetUrl(test.assets.cover))}')"></div>` : ""}
+          ${test.assets?.cover ? `<div class="test-card-cover" style="background-image:linear-gradient(90deg,rgba(0,0,0,.12),rgba(0,0,0,.02)),url('${escapeHtml(assetUrl(test.assets.cover, test))}')"></div>` : ""}
           <div class="test-card-content">
             <h2>${escapeHtml(test.title)}</h2>
             <p>${escapeHtml(test.description)}</p>
@@ -167,7 +168,9 @@ async function loadTests() {
     const loaded = await Promise.all((index.tests || []).map(async path => {
       const file = await fetch("tests/" + path);
       if (!file.ok) throw new Error("test file could not be loaded: " + path);
-      return file.json();
+      const test = await file.json();
+      test._basePath = "tests/" + path.slice(0, path.lastIndexOf("/") + 1);
+      return test;
     }));
     tests = loaded;
     renderCatalog();
