@@ -28,7 +28,7 @@ function renderCatalog() {
   const published = tests.filter(test => test.published === true);
   app.innerHTML = `
     <p class="eyebrow">коллекция</p>
-    <h1>выберите тест</h1>
+    <h1>найди свой тест</h1>
     <p class="lead">небольшие тесты для проверки больших и маленьких вопросов</p>
     <section class="test-list" aria-label="доступные тесты">
       ${published.length ? published.map(test => `
