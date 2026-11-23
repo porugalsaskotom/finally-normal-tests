@@ -1,4 +1,5 @@
 const app = document.getElementById("app");
+let tests = [];
 let activeTest = null;
 let currentQuestion = 0;
 let selectedAnswers = [];
@@ -9,24 +10,37 @@ function escapeHtml(value) {
   })[char]);
 }
 
+function assetUrl(path) {
+  if (!path) return "";
+  return new URL(path, document.baseURI).href;
+}
+
+function applyPageBackground(path) {
+  document.body.style.backgroundImage = path
+    ? `linear-gradient(rgba(243,240,231,.78), rgba(243,240,231,.78)), url("${assetUrl(path)}")`
+    : "";
+}
+
 function renderCatalog() {
   activeTest = null;
-  const tests = Array.isArray(window.TESTS) ? window.TESTS.filter(test => test.published === true) : [];
+  applyPageBackground("");
+  const published = tests.filter(test => test.published === true);
   app.innerHTML = `
-    <p class="eyebrow">Коллекция</p>
-    <h1>Найдите свой тест.</h1>
-    <p class="lead">Небольшие опросы и тесты. Выберите интересующий вас и узнайте результат в конце.</p>
-    <section class="test-list" aria-label="Доступные тесты">
-      ${tests.length ? tests.map(test => `
+    <p class="eyebrow">коллекция</p>
+    <h1>выберите тест</h1>
+    <p class="lead">небольшие тесты для проверки больших и маленьких вопросов</p>
+    <section class="test-list" aria-label="доступные тесты">
+      ${published.length ? published.map(test => `
         <article class="test-card">
-          <div>
+          ${test.assets?.cover ? `<div class="test-card-cover" style="background-image:linear-gradient(90deg,rgba(0,0,0,.12),rgba(0,0,0,.02)),url('${escapeHtml(assetUrl(test.assets.cover))}')"></div>` : ""}
+          <div class="test-card-content">
             <h2>${escapeHtml(test.title)}</h2>
             <p>${escapeHtml(test.description)}</p>
-            <div class="meta">${test.questions.length} вопросов · ${escapeHtml(test.duration || "Время не указано")}</div>
+            <div class="meta">${test.questions.length} вопросов · ${escapeHtml(test.duration || "время не указано")}</div>
           </div>
-          <button class="button" data-start="${escapeHtml(test.id)}">Начать тест</button>
+          <button class="button" data-start="${escapeHtml(test.id)}">начать тест</button>
         </article>
-      `).join("") : '<div class="empty-state">Пока нет опубликованных тестов.</div>'}
+      `).join("") : '<div class="empty-state">пока нет опубликованных тестов</div>'}
     </section>
   `;
   app.querySelectorAll("[data-start]").forEach(button => {
@@ -35,10 +49,11 @@ function renderCatalog() {
 }
 
 function startTest(id) {
-  activeTest = window.TESTS.find(test => test.id === id);
+  activeTest = tests.find(test => test.id === id);
   if (!activeTest || !activeTest.questions?.length) return renderCatalog();
   currentQuestion = 0;
   selectedAnswers = Array(activeTest.questions.length).fill(null);
+  applyPageBackground(activeTest.assets?.background);
   renderQuestion();
 }
 
@@ -47,24 +62,29 @@ function renderQuestion() {
   const total = activeTest.questions.length;
   const selected = selectedAnswers[currentQuestion];
   const progress = Math.round(((currentQuestion + 1) / total) * 100);
+  const coverStyle = activeTest.assets?.cover
+    ? `style="background-image:linear-gradient(rgba(35,40,33,.34),rgba(35,40,33,.34)),url('${escapeHtml(assetUrl(activeTest.assets.cover))}')"`
+    : "";
 
   app.innerHTML = `
-    <button class="back-link" id="exit-test">← Все тесты</button>
-    <section class="quiz-panel">
-      <div class="progress-row"><span>Вопрос ${currentQuestion + 1} из ${total}</span><span>${progress}%</span></div>
-      <div class="progress-track"><div class="progress-fill" style="width:${progress}%"></div></div>
-      <p class="eyebrow">${escapeHtml(activeTest.title)}</p>
-      <h1 class="question">${escapeHtml(question.text)}</h1>
-      <div class="answers">
-        ${question.answers.map((answer, index) => `
-          <button class="answer ${selected === index ? "selected" : ""}" data-answer="${index}" aria-pressed="${selected === index}">
-            <span class="answer-dot"></span><span>${escapeHtml(answer.text)}</span>
-          </button>
-        `).join("")}
-      </div>
-      <div class="quiz-actions">
-        <button class="button secondary" id="previous" ${currentQuestion === 0 ? "disabled" : ""}>Назад</button>
-        <button class="button" id="next" ${selected === null ? "disabled" : ""}>${currentQuestion === total - 1 ? "Узнать результат" : "Далее"}</button>
+    <button class="back-link" id="exit-test">← все тесты</button>
+    <section class="quiz-panel" ${coverStyle}>
+      <div class="quiz-panel-content">
+        <div class="progress-row"><span>вопрос ${currentQuestion + 1} из ${total}</span><span>${progress}%</span></div>
+        <div class="progress-track"><div class="progress-fill" style="width:${progress}%"></div></div>
+        <p class="eyebrow">${escapeHtml(activeTest.title)}</p>
+        <h1 class="question">${escapeHtml(question.text)}</h1>
+        <div class="answers">
+          ${question.answers.map((answer, index) => `
+            <button class="answer ${selected === index ? "selected" : ""}" data-answer="${index}" aria-pressed="${selected === index}">
+              <span class="answer-dot"></span><span>${escapeHtml(answer.text)}</span>
+            </button>
+          `).join("")}
+        </div>
+        <div class="quiz-actions">
+          <button class="button secondary" id="previous" ${currentQuestion === 0 ? "disabled" : ""}>назад</button>
+          <button class="button" id="next" ${selected === null ? "disabled" : ""}>${currentQuestion === total - 1 ? "узнать результат" : "далее"}</button>
+        </div>
       </div>
     </section>
   `;
@@ -88,7 +108,6 @@ function renderQuestion() {
 
 function calculateResult() {
   const scoring = activeTest.scoring || { type: "sum", results: [] };
-
   if (scoring.type === "categories") {
     const totals = {};
     activeTest.questions.forEach((question, questionIndex) => {
@@ -101,7 +120,6 @@ function calculateResult() {
     const result = scoring.results.find(item => item.category === winner?.[0]);
     return { result, score: winner ? winner[1] : 0, label: winner?.[0] || "" };
   }
-
   const score = activeTest.questions.reduce((sum, question, index) => {
     return sum + Number(question.answers[selectedAnswers[index]].score || 0);
   }, 0);
@@ -112,35 +130,51 @@ function calculateResult() {
 function renderResult() {
   const outcome = calculateResult();
   const result = outcome.result;
-
   app.innerHTML = `
-    <button class="back-link" id="home">← Все тесты</button>
+    <button class="back-link" id="home">← все тесты</button>
     <section class="result-panel">
-      <p class="eyebrow">Тест завершён</p>
-      <h1>${escapeHtml(result?.title || "Результат не определён")}</h1>
+      <p class="eyebrow">тест завершён</p>
+      <h1>${escapeHtml(result?.title || "результат не определён")}</h1>
       <p class="result-score">${outcome.score} баллов${outcome.label ? " · " + escapeHtml(outcome.label) : ""}</p>
-      <p class="result-description">${escapeHtml(result?.description || "Для этого результата пока не добавлено описание.")}</p>
+      <p class="result-description">${escapeHtml(result?.description || "для этого результата пока не добавлено описание")}</p>
       <div class="result-actions">
-        <button class="button" id="retry">Пройти ещё раз</button>
-        <button class="button secondary" id="share">Поделиться результатом</button>
+        <button class="button" id="retry">пройти ещё раз</button>
+        <button class="button secondary" id="share">поделиться результатом</button>
       </div>
     </section>
   `;
-
   document.getElementById("home").addEventListener("click", renderCatalog);
   document.getElementById("retry").addEventListener("click", () => startTest(activeTest.id));
   document.getElementById("share").addEventListener("click", async () => {
-    const shareData = { title: activeTest.title, text: result?.title || "Мой результат", url: location.href };
+    const shareData = { title: activeTest.title, text: result?.title || "мой результат", url: location.href };
     try {
       if (navigator.share) await navigator.share(shareData);
       else if (navigator.clipboard) {
-        await navigator.clipboard.writeText(shareData.text + " — " + shareData.url);
-        document.getElementById("share").textContent = "Ссылка скопирована";
+        await navigator.clipboard.writeText(shareData.text + " - " + shareData.url);
+        document.getElementById("share").textContent = "ссылка скопирована";
       }
     } catch (error) {
-      // Пользователь мог закрыть системное окно отправки — это не ошибка теста.
+      // share sheet can be dismissed without affecting the test
     }
   });
 }
 
-renderCatalog();
+async function loadTests() {
+  try {
+    const response = await fetch("tests/index.json");
+    if (!response.ok) throw new Error("test index could not be loaded");
+    const index = await response.json();
+    const loaded = await Promise.all((index.tests || []).map(async path => {
+      const file = await fetch("tests/" + path);
+      if (!file.ok) throw new Error("test file could not be loaded: " + path);
+      return file.json();
+    }));
+    tests = loaded;
+    renderCatalog();
+  } catch (error) {
+    console.error(error);
+    app.innerHTML = '<div class="empty-state">не удалось загрузить тесты. попробуйте обновить страницу</div>';
+  }
+}
+
+loadTests();
