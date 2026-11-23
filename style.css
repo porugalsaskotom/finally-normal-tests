@@ -1,0 +1,61 @@
+:root {
+  color-scheme: light;
+  --bg: #f5f5f2;
+  --surface: #ffffff;
+  --text: #20221f;
+  --muted: #747970;
+  --line: #e5e7e1;
+  --accent: #355c4b;
+  --accent-soft: #eaf0eb;
+  --shadow: 0 18px 50px rgba(27, 36, 29, .06);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--text); }
+button { font: inherit; }
+.site-header { max-width: 1080px; margin: 0 auto; padding: 26px 28px; display: flex; align-items: center; justify-content: space-between; }
+.brand { display: inline-flex; align-items: center; gap: 11px; color: var(--text); text-decoration: none; font-weight: 700; letter-spacing: -.03em; }
+.brand-mark { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 11px; color: white; background: var(--accent); }
+.header-note, .site-footer { color: var(--muted); font-size: 13px; }
+.main-content { width: min(760px, calc(100% - 36px)); margin: 58px auto 90px; }
+.eyebrow { margin: 0 0 13px; color: var(--accent); font-size: 12px; font-weight: 750; letter-spacing: .12em; text-transform: uppercase; }
+h1 { margin: 0; font-size: clamp(34px, 6vw, 54px); line-height: 1.04; letter-spacing: -.055em; font-weight: 700; }
+.lead { max-width: 590px; margin: 18px 0 0; color: var(--muted); font-size: 17px; line-height: 1.65; }
+.test-list { display: grid; gap: 14px; margin-top: 38px; }
+.test-card, .quiz-panel, .result-panel, .empty-state { background: var(--surface); border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--shadow); }
+.test-card { padding: 24px; display: flex; justify-content: space-between; align-items: center; gap: 22px; }
+.test-card h2 { margin: 0; font-size: 20px; letter-spacing: -.025em; }
+.test-card p { margin: 8px 0 0; color: var(--muted); line-height: 1.55; }
+.meta { margin-top: 13px; color: var(--muted); font-size: 12px; }
+.button { border: 0; border-radius: 999px; padding: 13px 20px; background: var(--accent); color: white; font-weight: 650; cursor: pointer; transition: transform .15s, background .15s; white-space: nowrap; }
+.button:hover { background: #294a3b; transform: translateY(-1px); }
+.button:focus-visible, .answer:focus-visible { outline: 3px solid #a8c4b2; outline-offset: 3px; }
+.button.secondary { background: var(--accent-soft); color: var(--accent); }
+.button.secondary:hover { background: #dce8df; }
+.back-link { display: inline-flex; margin-bottom: 25px; border: 0; padding: 0; background: none; color: var(--muted); cursor: pointer; }
+.quiz-panel, .result-panel { padding: clamp(22px, 5vw, 38px); }
+.progress-row { display: flex; justify-content: space-between; gap: 15px; color: var(--muted); font-size: 13px; }
+.progress-track { height: 5px; margin: 13px 0 30px; overflow: hidden; border-radius: 99px; background: #edf0eb; }
+.progress-fill { height: 100%; background: var(--accent); transition: width .2s ease; }
+.question { margin: 0 0 23px; font-size: clamp(23px, 4vw, 31px); line-height: 1.2; letter-spacing: -.035em; }
+.answers { display: grid; gap: 10px; }
+.answer { width: 100%; display: flex; align-items: center; gap: 13px; padding: 15px 16px; border: 1px solid var(--line); border-radius: 14px; background: white; color: var(--text); text-align: left; cursor: pointer; transition: border .15s, background .15s; }
+.answer:hover { border-color: #a8b9ad; background: #fbfcfa; }
+.answer.selected { border-color: var(--accent); background: var(--accent-soft); }
+.answer-dot { width: 19px; height: 19px; flex: 0 0 19px; border: 1.5px solid #b7beb7; border-radius: 50%; }
+.answer.selected .answer-dot { border: 6px solid var(--accent); }
+.quiz-actions { display: flex; justify-content: space-between; gap: 12px; margin-top: 25px; }
+.result-score { margin: 20px 0 8px; color: var(--accent); font-size: 14px; font-weight: 700; }
+.result-description { color: var(--muted); font-size: 16px; line-height: 1.7; }
+.result-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+.empty-state { padding: 30px; color: var(--muted); line-height: 1.6; }
+.site-footer { max-width: 1080px; margin: 0 auto; padding: 0 28px 30px; }
+.loading { color: var(--muted); }
+@media (max-width: 560px) {
+  .site-header { padding: 19px 18px; }
+  .header-note { display: none; }
+  .main-content { margin-top: 38px; }
+  .test-card { align-items: flex-start; flex-direction: column; }
+  .test-card .button { width: 100%; }
+  .quiz-actions .button { flex: 1; }
+}
