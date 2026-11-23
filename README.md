@@ -72,8 +72,9 @@ add each new test json path to this manifest. the app fetches each listed json f
   "description": "это тестовый тест для тестового теста",
   "duration": "1 минута",
   "assets": {
-    "cover": "media/images/common/original_cover_file.jpg",
-    "background": "media/images/common/original_background_file.png"
+    "cover": null,
+    "background": "media/images/common/background.jpg",
+    "card_background": "media/images/common/card_background.jpg"
   },
   "questions": [],
   "scoring": {
@@ -83,9 +84,11 @@ add each new test json path to this manifest. the app fetches each listed json f
 }
 ```
 
-- `assets.cover` is optional and points to the catalog cover and quiz panel image
+- `assets.cover` is optional and points to the quiz panel image
 - `assets.background` is optional and points to the page background while the test is open
+- `assets.card_background` is optional and points to the catalog test card background
 - paths may use any original filename and supported image extension
+- image paths are relative to the test folder and should begin with `media/images/common/` for shared images
 - leave a role as `null` until an image is assigned
 - when the owner uploads images, identify files by their exact names and update only the relevant json paths
 - missing or unassigned image files do not prevent the test from working
