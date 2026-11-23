@@ -158,11 +158,11 @@ function renderResult() {
 
 async function loadTests() {
   try {
-    const response = await fetch("tests/index.json?v=20261124-4", { cache: "no-store" });
+    const response = await fetch("tests/index.json?v=20261124-5", { cache: "no-store" });
     if (!response.ok) throw new Error("test index could not be loaded");
     const index = await response.json();
     const loaded = await Promise.all((index.tests || []).map(async path => {
-      const file = await fetch("tests/" + path + "?v=20261124-4", { cache: "no-store" });
+      const file = await fetch("tests/" + path + "?v=20261124-5", { cache: "no-store" });
       if (!file.ok) throw new Error("test file could not be loaded: " + path);
       const test = await file.json();
       test._basePath = "tests/" + path.slice(0, path.lastIndexOf("/") + 1);
