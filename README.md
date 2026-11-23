@@ -1,134 +1,212 @@
 # finally-normal-tests
 
-Минималистичная платформа интерактивных тестов на HTML, CSS и JavaScript. Сайт статический: нет сервера, базы данных, сборки или аккаунтов.
+minimal static interactive test platform built with html, css and vanilla javascript
 
-- **Сайт:** https://porugalsaskotom.github.io/finally-normal-tests/
-- **Репозиторий:** https://github.com/porugalsaskotom/finally-normal-tests
+- site: https://porugalsaskotom.github.io/finally-normal-tests/
+- repository: https://github.com/porugalsaskotom/finally-normal-tests
 
-## Файлы
+## project structure
 
-- `index.html` — структура страницы и подключение ресурсов.
-- `style.css` — оформление, цвета, адаптация для телефона.
-- `app.js` — каталог, прохождение тестов, навигация и подсчёт результатов.
-- `tests.js` — данные тестов: заголовки, вопросы, ответы, scoring и публикация.
-- `README.md` — эта инструкция.
+current root files:
 
-## Публикация и скрытие тестов
+- `index.html` - page shell and resource links
+- `style.css` - layout, colors and responsive styles
+- `app.js` - catalog, test flow, navigation and scoring
+- `tests.js` - current test data source
+- `README.md` - project rules and instructions
 
-В каждом объекте теста в `tests.js` есть поле `published`:
+## target test architecture
 
-```js
-{
-  id: "my-test",
-  published: true,
-  title: "Название теста",
-  // ...
-}
+new tests should use one self-contained folder per test. use this structure as the target architecture when implementing the migration from `tests.js`:
+
+```text
+tests/
+  test_slug/
+    test.json
+    images/
+      cover.webp
+      background.webp
+      questions/
+        question_01.webp
+      results/
+        result_slug.webp
+    media/
+      audio/
+      video/
+      other/
+    files/
+      attachments/
 ```
 
-- `published: true` — тест виден в каталоге.
-- `published: false` — тест скрыт из каталога.
-- Если поле отсутствует или не равно `true`, тест также скрыт.
+rules:
 
-Чтобы временно убрать тест, установи `false`; чтобы вернуть — `true`. Сам тест при этом остаётся в коде.
+- folder names and asset filenames use english `snake_case` with lowercase letters, digits and underscores
+- use a stable unique folder slug, for example `how_you_approach_tasks`
+- `test.json` stores test metadata, publication state, questions, answers, scoring, result content and relative asset paths
+- `images/` stores visual assets for this test only
+- `images/questions/` stores question-specific images
+- `images/results/` stores result-specific images
+- `media/` stores optional audio, video and other media; create subfolders only when needed
+- `files/` stores optional downloadable or supporting files; create it only when needed
+- all asset paths in json are relative to the test folder
+- do not put image data or base64 blobs inside json
+- do not create empty optional folders unless useful
+- tests must remain portable: moving one test folder should move all of its content
 
-**Важно:** это только скрытие из каталога, а не защита доступа. Репозиторий публичный, поэтому содержимое `tests.js` можно открыть через исходный код сайта или GitHub. Не храни здесь секретные, платные или действительно закрытые тесты. Для настоящего ограничения доступа понадобится серверная авторизация или закрытое хранилище.
+example `test.json`:
 
-## Как добавить новый тест
-
-1. Открой `tests.js`.
-2. Добавь новый объект в массив `window.TESTS = [ ... ]`. Между объектами поставь запятую.
-3. Укажи уникальный `id` латинскими буквами и цифрами.
-4. Пока тест готовится, поставь `published: false`.
-5. Заполни `title`, `description`, `duration`, `questions` и `scoring`.
-6. Когда тест готов, переключи `published` на `true`.
-
-Пример:
-
-```js
+```json
 {
-  id: "my-new-test",
-  published: false,
-  title: "Название теста",
-  description: "Короткое описание.",
-  duration: "3–5 минут",
-  questions: [
+  "id": "how_you_approach_tasks",
+  "published": true,
+  "title": "как вы подходите к задачам",
+  "description": "короткий тест о подходе к решению задач",
+  "duration": "3-5 минут",
+  "assets": {
+    "cover": "images/cover.webp",
+    "background": "images/background.webp"
+  },
+  "questions": [
     {
-      text: "Текст вопроса?",
-      answers: [
-        { text: "Первый ответ", score: 1 },
-        { text: "Второй ответ", score: 2 }
+      "id": "question_01",
+      "text": "вы столкнулись с неожиданной задачей",
+      "image": "images/questions/question_01.webp",
+      "answers": [
+        {
+          "id": "answer_01",
+          "text": "сначала изучу ситуацию",
+          "score": 1
+        }
       ]
     }
   ],
-  scoring: {
-    type: "sum",
-    results: [
-      { min: 1, max: 1, title: "Результат A", description: "Описание A." },
-      { min: 2, max: 2, title: "Результат B", description: "Описание B." }
+  "scoring": {
+    "type": "sum",
+    "results": [
+      {
+        "id": "result_slug",
+        "min": 1,
+        "max": 5,
+        "title": "спокойный аналитик",
+        "description": "описание результата",
+        "image": "images/results/result_slug.webp"
+      }
     ]
   }
 }
 ```
 
-Для нескольких вопросов добавляй объекты в массив `questions`. У каждого ответа в режиме `sum` должно быть числовое поле `score`.
+the example describes the target data format, not the currently deployed runtime format
 
-## Подсчёт результатов
+## visual and writing style
 
-Поле `scoring.type` поддерживает два режима.
+all user-facing website text must follow these rules:
 
-### `sum` — сумма баллов
+- use lowercase letters only
+- do not use uppercase letters in titles, buttons, labels, questions, results or messages
+- do not put periods at the end of paragraphs or standalone ui text
+- do not use em dashes or en dashes
+- use a regular hyphen `-` when a dash is needed
+- keep copy concise and calm
+- apply these rules to all new and edited user-facing text
+- code identifiers, file paths, json keys and technical syntax are not ui copy and must keep valid conventional casing when required
 
-У каждого ответа есть числовое поле `score`. Сайт складывает баллы и ищет результат, в диапазон которого попала сумма. В каждом объекте результата указываются `min`, `max`, `title` и `description`. Диапазоны должны покрывать все возможные суммы без пропусков.
+## current test data and publication
 
-### `categories` — результат по категориям
+the deployed app currently reads the `window.TESTS` array from `tests.js`
 
-У ответа указывается массив `scores`:
+each current test object has a `published` field:
+
+- `published: true` - visible in the public catalog
+- `published: false` - hidden from the catalog
+- missing or non-true values are also hidden
+
+this is catalog filtering only, not access control. the repository and its javascript are public, so hidden test content can still be inspected
+
+do not migrate the runtime to per-test json files until the app loader and catalog discovery are updated together. when implementing the migration, preserve existing test behavior and scoring
+
+## scoring
+
+the current app supports two scoring modes
+
+### sum
+
+each answer has a numeric `score`. the app adds selected scores and chooses the result whose `min` and `max` range contains the total. result ranges must cover all possible totals without gaps
+
+### categories
+
+each answer has a `scores` array:
 
 ```js
 {
-  text: "Вариант ответа",
+  text: "answer text",
   scores: [
-    { category: "Аналитик", points: 2 },
-    { category: "Практик", points: 1 }
+    { category: "analyst", points: 2 },
+    { category: "practitioner", points: 1 }
   ]
 }
 ```
 
-В `scoring.results` добавь результат для каждой категории с совпадающим полем `category`, а также `title` и `description`. Сайт складывает баллы по категориям и показывает категорию с наибольшей суммой. Названия категорий должны совпадать буквально.
+define matching categories in `scoring.results`. the app totals points by category and displays the category with the highest score. category names must match exactly
 
-## Изменение дизайна
+## adding and publishing tests
 
-Редактируй `style.css`. Основные переменные находятся в начале файла:
+current workflow:
 
-- `--bg` — фон страницы;
-- `--surface` — фон карточек;
-- `--text` — основной текст;
-- `--muted` — второстепенный текст;
-- `--line` — границы;
-- `--accent` — зелёный акцент;
-- `--accent-soft` — светлый зелёный.
+1. add a test object to `tests.js`
+2. give it a unique id using lowercase english `snake_case`
+3. set `published: false` while preparing it
+4. complete its title, description, duration, questions and scoring
+5. set `published: true` when it is ready
 
-## Публикация изменений на сайте
+target workflow after the json migration:
 
-1. Измени нужный файл на GitHub или попроси ChatGPT внести правки через подключённый GitHub.
-2. Сохрани изменения коммитом в ветку `main`.
-3. GitHub Pages автоматически опубликует обновление. Обычно нужно подождать немного.
-4. Проверь публичную ссылку. Если браузер показывает старую версию, нажми Ctrl + F5.
+1. create `tests/test_slug/`
+2. add `test.json`
+3. add optional assets to that test folder
+4. reference assets with relative paths in `test.json`
+5. set `published: false` until ready
+6. publish by setting `published: true`
 
-GitHub Pages должен быть настроен в **Settings → Pages**: источник — ветка `main`, папка `/(root)`.
+## editing the design
 
-## Правила проекта
+edit `style.css`. main css variables are near the top:
 
-- Не меняй `id` существующих тестов без необходимости: они используются для запуска теста.
-- Содержимое тестов храни в `tests.js`, а не в `app.js`.
-- Новые тесты сначала оставляй с `published: false`.
-- Не добавляй пароли, API-ключи, персональные данные или секретный контент.
-- После изменений проверь каталог, выбор ответов, переход назад, результат и повторное прохождение.
+- `--bg` - page background
+- `--surface` - card background
+- `--text` - primary text
+- `--muted` - secondary text
+- `--line` - borders
+- `--accent` - green accent
+- `--accent-soft` - soft green
 
-## Текущие ограничения
+## deployment
 
-- Результаты не сохраняются и не отправляются владельцу сайта.
-- Нет аккаунтов, админ-панели и статистики.
-- Публикация тестов управляется вручную через `published` в `tests.js`.
-- Скрытые тесты остаются в публичном JavaScript-файле.
+1. update files in the `main` branch
+2. github pages deploys changes automatically
+3. check the public site after deployment
+4. use a hard refresh if the browser shows cached files
+
+github pages source: `main` branch, root folder
+
+## ai and contributor rules
+
+- read this file before changing project architecture or adding tests
+- keep the app static unless the owner explicitly approves a backend
+- do not add frameworks, build tools, dependencies or services without approval
+- keep test content separate from rendering logic
+- follow the target per-test folder architecture for new architecture work
+- remember that the current runtime still uses `tests.js` until migration is explicitly implemented
+- preserve existing test ids unless a migration requires a deliberate change
+- keep new tests unpublished until reviewed
+- never claim that a planned architecture is already implemented
+- never add secrets, api keys, private personal data or confidential test content
+- after code changes, verify catalog display, answer selection, back navigation, result rendering and retaking a test
+
+## current limitations
+
+- results are not stored or sent to the site owner
+- there are no accounts, admin panel or analytics
+- publication is manually controlled
+- hidden tests are still present in public source files
+- per-test json loading is a target architecture and is not yet implemented
