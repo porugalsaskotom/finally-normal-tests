@@ -25,11 +25,11 @@ function applyPageBackground(path, test = activeTest) {
 function renderCatalog() {
   activeTest = null;
   const published = tests.filter(test => test.published === true);
-  applyPageBackground(published[0]?.assets?.background || "", published[0]);
+  applyPageBackground("");
   app.innerHTML = `
     <section class="test-list" aria-label="доступные тесты">
       ${published.length ? published.map(test => `
-        <article class="test-card" ${test.assets?.card_background ? 'style="background-image:linear-gradient(rgba(251,250,246,.84),rgba(251,250,246,.84)),url(\'' + escapeHtml(assetUrl(test.assets.card_background, test)) + '\')"' : ""}>
+        <article class="test-card" ${test.assets?.card_background ? 'style="background-image:url(\'' + escapeHtml(assetUrl(test.assets.card_background, test)) + '\')"' : ""}>
           <div class="test-card-content">
             <h2>${escapeHtml(test.title)}</h2>
             <p>${escapeHtml(test.description)}</p>
@@ -158,11 +158,11 @@ function renderResult() {
 
 async function loadTests() {
   try {
-    const response = await fetch("tests/index.json?v=20261124-2", { cache: "no-store" });
+    const response = await fetch("tests/index.json?v=20261124-4", { cache: "no-store" });
     if (!response.ok) throw new Error("test index could not be loaded");
     const index = await response.json();
     const loaded = await Promise.all((index.tests || []).map(async path => {
-      const file = await fetch("tests/" + path + "?v=20261124-2", { cache: "no-store" });
+      const file = await fetch("tests/" + path + "?v=20261124-4", { cache: "no-store" });
       if (!file.ok) throw new Error("test file could not be loaded: " + path);
       const test = await file.json();
       test._basePath = "tests/" + path.slice(0, path.lastIndexOf("/") + 1);
