@@ -162,11 +162,11 @@ function renderResult() {
 
 async function loadTests() {
   try {
-    const response = await fetch("tests/index.json");
+    const response = await fetch("tests/index.json?v=20261124-2", { cache: "no-store" });
     if (!response.ok) throw new Error("test index could not be loaded");
     const index = await response.json();
     const loaded = await Promise.all((index.tests || []).map(async path => {
-      const file = await fetch("tests/" + path);
+      const file = await fetch("tests/" + path + "?v=20261124-2", { cache: "no-store" });
       if (!file.ok) throw new Error("test file could not be loaded: " + path);
       const test = await file.json();
       test._basePath = "tests/" + path.slice(0, path.lastIndexOf("/") + 1);
@@ -176,7 +176,7 @@ async function loadTests() {
     renderCatalog();
   } catch (error) {
     console.error(error);
-    app.innerHTML = '<div class="empty-state">не удалось загрузить тесты. попробуйте обновить страницу</div>';
+    app.innerHTML = '<div class="empty-state">не удалось загрузить тесты - попробуйте обновить страницу</div>';
   }
 }
 
