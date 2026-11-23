@@ -19,7 +19,7 @@ h1 { margin: 0; font-size: clamp(34px, 6vw, 52px); line-height: 1.08; letter-spa
 .lead { max-width: 540px; margin: 16px 0 0; color: var(--muted); font-size: 16px; line-height: 1.6; }
 .test-list { display: grid; gap: 10px; margin-top: 0; }
 .test-card, .quiz-panel, .result-panel, .empty-state { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; }
-.test-card { overflow: hidden; display: grid; grid-template-columns: minmax(0,1fr) 25%; align-items: center; gap: 20px; padding: 18px; background-color: var(--surface); background-size: cover; background-position: center; }
+.test-card { background-color: #fff; overflow: hidden; display: grid; grid-template-columns: minmax(0,1fr) 25%; align-items: center; gap: 20px; padding: 18px; background-color: var(--surface); background-size: cover; background-position: center; }
 .test-card-content { padding: 8px 0; }
 .test-card h2 { margin: 0; font-size: 18px; letter-spacing: -.025em; font-weight: 650; }
 .test-card p { margin: 7px 0 0; color: var(--muted); line-height: 1.5; font-size: 14px; }
