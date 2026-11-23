@@ -16,16 +16,16 @@ function assetUrl(path, test = activeTest) {
   return new URL(base + path, document.baseURI).href;
 }
 
-function applyPageBackground(path) {
+function applyPageBackground(path, test = activeTest) {
   document.body.style.backgroundImage = path
-    ? `linear-gradient(rgba(243,240,231,.28), rgba(243,240,231,.28)), url("${assetUrl(path)}")`
+    ? `linear-gradient(rgba(243,240,231,.28), rgba(243,240,231,.28)), url("${assetUrl(path, test)}")`
     : "";
 }
 
 function renderCatalog() {
   activeTest = null;
   const published = tests.filter(test => test.published === true);
-  applyPageBackground(published[0]?.assets?.background || "");
+  applyPageBackground(published[0]?.assets?.background || "", published[0]);
   app.innerHTML = `
     <section class="test-list" aria-label="доступные тесты">
       ${published.length ? published.map(test => `
