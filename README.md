@@ -14,7 +14,6 @@ minimal static interactive test platform built with html, css and vanilla javasc
 - `tests/test_slug/test.json` - one test definition
 - `tests/test_slug/media/images/` - test images
 - `tests/test_slug/media/images/common/` - shared test images
-- `tests/test_slug/files/` - optional downloadable or supporting files
 
 ## test folder architecture
 
@@ -44,6 +43,7 @@ tests/
 - create `media/images/questions/` and `media/images/results/` only when needed
 - all asset paths in json are relative to the test folder
 - do not embed image data or base64 in json
+- do not create unused empty folders
 - moving a test folder must move all assets with it
 
 ## test manifest and loading
