@@ -6,7 +6,8 @@
   "duration": "1 минута",
   "assets": {
     "cover": null,
-    "background": null
+    "background": "media/images/common/images.jfif",
+    "card_background": "media/images/common/istockphoto-1201149949-612x612.jpg"
   },
   "questions": [
     {
