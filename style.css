@@ -14,13 +14,12 @@ body { margin: 0; min-height: 100vh; background-color: var(--bg); background-siz
 button { font: inherit; }
 .site-header { max-width: 900px; margin: 0 auto; padding: 28px 28px 0; }
 .brand { color: var(--accent); text-decoration: none; font-size: 15px; font-weight: 750; letter-spacing: -.04em; }
-.main-content { width: min(700px, calc(100% - 36px)); margin: 76px auto 90px; }
+.main-content { width: min(700px, calc(100% - 36px)); margin: 52px auto 90px; }
 h1 { margin: 0; font-size: clamp(34px, 6vw, 52px); line-height: 1.08; letter-spacing: -.055em; font-weight: 680; }
 .lead { max-width: 540px; margin: 16px 0 0; color: var(--muted); font-size: 16px; line-height: 1.6; }
-.test-list { display: grid; gap: 10px; margin-top: 34px; }
+.test-list { display: grid; gap: 10px; margin-top: 0; }
 .test-card, .quiz-panel, .result-panel, .empty-state { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; }
-.test-card { overflow: hidden; display: grid; grid-template-columns: 150px minmax(0,1fr) auto; align-items: center; gap: 20px; padding: 12px; }
-.test-card-cover { align-self: stretch; min-height: 112px; border-radius: 10px; background-color: #e5e1d6; background-size: cover; background-position: center; }
+.test-card { overflow: hidden; display: grid; grid-template-columns: minmax(0,1fr) 25%; align-items: center; gap: 20px; padding: 18px; background-color: var(--surface); background-size: cover; background-position: center; }
 .test-card-content { padding: 8px 0; }
 .test-card h2 { margin: 0; font-size: 18px; letter-spacing: -.025em; font-weight: 650; }
 .test-card p { margin: 7px 0 0; color: var(--muted); line-height: 1.5; font-size: 14px; }
