@@ -1,25 +1,16 @@
 # finally-normal-tests
 
-minimal static interactive test platform built with html, css and vanilla javascript
+бесплатная статическая платформа интерактивных тестов на html, css и vanilla javascript
 
-- site: https://porugalsaskotom.github.io/finally-normal-tests/
-- repository: https://github.com/porugalsaskotom/finally-normal-tests
+- сайт: https://porugalsaskotom.github.io/finally-normal-tests/
+- репозиторий: https://github.com/porugalsaskotom/finally-normal-tests
 
-## project structure
-
-- `index.html` - page shell
-- `style.css` - layout, colors, responsive styles and image presentation
-- `app.js` - test loading, catalog, test flow, navigation and scoring
-- `tests/index.json` - manifest listing test json files
-- `tests/test_slug/test.json` - one test definition
-- `tests/test_slug/media/images/` - test images
-- `tests/test_slug/media/images/common/` - shared test images
-
-## test folder architecture
-
-each test must live in its own portable folder
+## как устроен проект
 
 ```text
+index.html
+style.css
+app.js
 tests/
   index.json
   test_slug/
@@ -27,54 +18,41 @@ tests/
     media/
       images/
         common/
-          uploaded_file_1.jpg
-          uploaded_file_2.png
+        questions/
+        results/
 ```
 
-- folder names and asset filenames use lowercase english `snake_case`
-- use a stable unique slug, for example `testovyi_test`
-- `test.json` stores metadata, publication state, questions, answers, scoring and relative asset paths
-- `media/images/common/` is the general upload area for any shared test images
-- keep original uploaded filenames; do not rename files just to assign a role
-- `media/images/questions/` stores question-specific images
-- `media/images/results/` stores result-specific images
-- `test.json` references the exact selected filename and relative path for each role
-- the same file may be assigned to multiple roles when requested
-- create `media/images/questions/` and `media/images/results/` only when needed
-- all asset paths in json are relative to the test folder
-- do not embed image data or base64 in json
-- do not create unused empty folders
-- moving a test folder must move all assets with it
+- `index.html` - оболочка страницы и подключение стилей и скрипта
+- `style.css` - оформление, адаптивность и единая цветовая система
+- `app.js` - загрузка тестов, каталог, прохождение, подсчёт результата и навигация
+- `tests/index.json` - список файлов тестов, которые приложение должно загрузить
+- `tests/test_slug/test.json` - содержание и настройки одного теста
+- `media/images/` - изображения, принадлежащие конкретному тесту
 
-## test manifest and loading
+## как добавить тест
 
-github pages is static and cannot automatically enumerate folders. therefore `tests/index.json` is the explicit catalog manifest
+1. Создать папку с уникальным именем в `tests/`, например `my_test`
+2. Добавить в неё `test.json`
+3. Положить изображения этого теста в `media/images/common/`, а при необходимости - в `questions/` или `results/`
+4. Указать относительные пути к изображениям в `test.json`
+5. Добавить путь к json в массив `tests` файла `tests/index.json`
+6. После проверки поставить `"published": true`
 
-example:
+Имена папок и новых файлов - lowercase english snake_case. Загруженные изображения сохранять под исходными именами. Не создавать пустые папки без необходимости. Пути в json указываются относительно папки теста.
+
+## формат test.json
 
 ```json
 {
-  "tests": [
-    "testovyi_test/test.json"
-  ]
-}
-```
-
-add each new test json path to this manifest. the app fetches each listed json file and shows only tests where `published` is exactly `true`
-
-## test json format
-
-```json
-{
-  "id": "testovyi_test",
-  "published": true,
-  "title": "тестовый тест",
-  "description": "это тестовый тест для тестового теста",
-  "duration": "1 минута",
+  "id": "my_test",
+  "published": false,
+  "title": "название теста",
+  "description": "короткое описание",
+  "duration": "5 минут",
   "assets": {
     "cover": null,
-    "background": "media/images/common/background.jpg",
-    "card_background": "media/images/common/card_background.jpg"
+    "background": null,
+    "card_background": null
   },
   "questions": [],
   "scoring": {
@@ -84,65 +62,68 @@ add each new test json path to this manifest. the app fetches each listed json f
 }
 ```
 
-- `assets.cover` is optional and points to the quiz panel image
-- `assets.background` is optional and points to the page background while the test is open
-- `assets.card_background` is optional and points to the catalog test card background
-- paths may use any original filename and supported image extension
-- image paths are relative to the test folder and should begin with `media/images/common/` for shared images
-- leave a role as `null` until an image is assigned
-- when the owner uploads images, identify files by their exact names and update only the relevant json paths
-- missing or unassigned image files do not prevent the test from working
-- use unique stable ids for tests, questions, answers and results
+### изображения
 
-## publication
+- `assets.cover` - изображение внутри панели вопросов
+- `assets.background` - фон всей страницы во время прохождения теста; при выходе в каталог возвращается общий фон
+- `assets.card_background` - изображение фона карточки теста в каталоге
+- `null` означает, что изображение для этой роли не задано
+- если `card_background` отсутствует, карточка остаётся белой
+- все пути должны указывать на реально существующие файлы
 
-- `published: true` - visible in the catalog
-- `published: false` - hidden from the catalog
-- missing or non-true values are hidden
-- this is catalog filtering only, not access control; all public repository files can be inspected
+Общие изображения для теста хранятся в `media/images/common/`. Изображения отдельных вопросов и результатов можно хранить в соответствующих папках. Не встраивать изображения в json в виде base64.
 
-## scoring
+### публикация
 
-### sum
+- `published: true` - тест показывается в каталоге
+- `published: false` или отсутствие поля - тест скрыт
+- это только фильтр интерфейса, а не защита содержимого: файлы публичного репозитория доступны посетителям
 
-each answer has a numeric `score`. the app adds selected scores and chooses the result whose `min` and `max` range contains the total. ranges must cover all possible totals without gaps
+### подсчёт результата
 
-### categories
+- `sum`: у каждого ответа есть числовое поле `score`; сумма сопоставляется с диапазонами `min` и `max` в результатах
+- `categories`: у ответа есть массив `scores` с полями `category` и `points`; побеждает категория с наибольшей суммой
 
-each answer has a `scores` array with `category` and `points`. define matching categories in `scoring.results`. the app totals points by category and displays the category with the highest score
+Диапазоны результатов для `sum` должны покрывать все возможные суммы без пропусков.
 
-## visual and writing style
+## цветовая система
 
-all user-facing website text must follow these rules:
+Цвета задаются централизованно в начале `style.css`. При новой цветовой схеме меняются только четыре базовых значения:
 
-- lowercase letters only
-- no periods at the end of paragraphs or standalone ui text
-- do not use em dashes or en dashes; use a regular hyphen `-`
-- keep copy concise and calm
-- code identifiers, file paths, json keys and technical syntax keep conventional casing when required
+- `--color-primary` - основной акцент и основные кнопки
+- `--color-secondary` - вторичные кнопки и дополнительные акценты
+- `--color-neutral` - фон страницы и нейтральные поверхности
+- `--color-highlight` - выделение выбранного ответа и фокус клавиатуры
 
-## ai and contributor rules
+Семантические переменные ниже связывают палитру с ролями интерфейса: основной текст, приглушённый текст, границы, фон карточек, фон и текст кнопок. Не назначать цвет каждому элементу отдельно, если для него уже есть подходящая переменная.
 
-- read this file before changing project architecture or adding tests
-- keep the app static unless the owner explicitly approves a backend
-- do not add frameworks, build tools, dependencies or services without approval
-- keep test content separate from rendering logic
-- every test belongs in its own folder and is registered in `tests/index.json`
-- use `media/images/common/` as the general image drop folder; preserve original filenames
-- when the owner says which uploaded image has which role, map its exact path in `test.json`
-- preserve the current json schema and scoring behavior
-- keep new tests unpublished until reviewed
-- never claim a planned feature is implemented
-- never add secrets, api keys, personal data or confidential content
-- after code changes, verify catalog display, answer selection, back navigation, result rendering and retaking a test
+При получении новой палитры:
+1. Определить её основные цвета и записать HEX
+2. Назначить роли четырём базовым переменным
+3. Проверить контраст текста на кнопках и поверхностях
+4. Если одного цвета недостаточно для читаемости, подобрать нейтральный цвет текста отдельно - не делать весь текст разноцветным
 
-## deployment
+## стиль интерфейса
 
-update files in `main`; github pages deploys automatically from the repository root. hard refresh if cached files remain visible
+- весь видимый текст сайта - lowercase
+- не ставить точки в конце коротких абзацев и элементов интерфейса
+- не использовать длинное тире; использовать обычный дефис
+- основной текст имеет один общий цвет; жирность и размер задают иерархию
+- кнопки используют цвета, заданные через семантические переменные
 
-## current limitations
+## правила разработки
 
-- results are not stored or sent to the site owner
-- there are no accounts, admin panel or analytics
-- tests and images are public
-- image files are not committed until uploaded by the owner
+- проект остаётся статическим: html, css и vanilla javascript
+- не добавлять фреймворки, сборщики, серверы и внешние зависимости без согласования
+- не смешивать данные тестов с логикой отображения
+- каждый тест хранить в отдельной папке и регистрировать в `tests/index.json`
+- новые тесты по умолчанию оставлять неопубликованными
+- не менять существующую структуру json без необходимости
+- не добавлять секреты, ключи api и личные данные
+- после изменений проверять загрузку каталога, выбор ответов, переходы назад и вперёд, результат и повторное прохождение
+
+## публикация и ограничения
+
+Изменения в ветке `main` публикуются через GitHub Pages. Если сайт показывает старую версию, обновить страницу без кэша.
+
+Платформа не хранит результаты, не имеет аккаунтов, панели администратора или аналитики. Все файлы и тесты в публичном репозитории доступны для просмотра.
