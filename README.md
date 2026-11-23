@@ -72,8 +72,8 @@ add each new test json path to this manifest. the app fetches each listed json f
   "description": "это тестовый тест для тестового теста",
   "duration": "1 минута",
   "assets": {
-    "cover": "images/common/original_cover_file.jpg",
-    "background": "images/common/original_background_file.png"
+    "cover": "media/images/common/original_cover_file.jpg",
+    "background": "media/images/common/original_background_file.png"
   },
   "questions": [],
   "scoring": {
