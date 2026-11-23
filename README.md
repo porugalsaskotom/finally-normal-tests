@@ -12,8 +12,8 @@ minimal static interactive test platform built with html, css and vanilla javasc
 - `app.js` - test loading, catalog, test flow, navigation and scoring
 - `tests/index.json` - manifest listing test json files
 - `tests/test_slug/test.json` - one test definition
-- `tests/test_slug/images/` - test images
-- `tests/test_slug/media/` - optional audio, video and other media
+- `tests/test_slug/media/images/` - test images
+- `tests/test_slug/media/images/common/` - shared test images
 - `tests/test_slug/files/` - optional downloadable or supporting files
 
 ## test folder architecture
@@ -25,30 +25,23 @@ tests/
   index.json
   test_slug/
     test.json
-    images/
-      common/
-        uploaded_file_1.jpg
-        uploaded_file_2.png
-      questions/
-      results/
     media/
-      audio/
-      video/
-      other/
-    files/
-      attachments/
+      images/
+        common/
+          uploaded_file_1.jpg
+          uploaded_file_2.png
 ```
 
 - folder names and asset filenames use lowercase english `snake_case`
 - use a stable unique slug, for example `testovyi_test`
 - `test.json` stores metadata, publication state, questions, answers, scoring and relative asset paths
-- `images/common/` is the general upload area for any shared test images
+- `media/images/common/` is the general upload area for any shared test images
 - keep original uploaded filenames; do not rename files just to assign a role
-- `images/questions/` stores question-specific images
-- `images/results/` stores result-specific images
+- `media/images/questions/` stores question-specific images
+- `media/images/results/` stores result-specific images
 - `test.json` references the exact selected filename and relative path for each role
 - the same file may be assigned to multiple roles when requested
-- media and files are optional; create subfolders only when needed
+- create `media/images/questions/` and `media/images/results/` only when needed
 - all asset paths in json are relative to the test folder
 - do not embed image data or base64 in json
 - moving a test folder must move all assets with it
@@ -132,7 +125,7 @@ all user-facing website text must follow these rules:
 - do not add frameworks, build tools, dependencies or services without approval
 - keep test content separate from rendering logic
 - every test belongs in its own folder and is registered in `tests/index.json`
-- use `images/common/` as the general image drop folder; preserve original filenames
+- use `media/images/common/` as the general image drop folder; preserve original filenames
 - when the owner says which uploaded image has which role, map its exact path in `test.json`
 - preserve the current json schema and scoring behavior
 - keep new tests unpublished until reviewed
