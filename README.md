@@ -26,8 +26,9 @@ tests/
   test_slug/
     test.json
     images/
-      cover.webp
-      background.webp
+      common/
+        uploaded_file_1.jpg
+        uploaded_file_2.png
       questions/
       results/
     media/
@@ -41,9 +42,12 @@ tests/
 - folder names and asset filenames use lowercase english `snake_case`
 - use a stable unique slug, for example `testovyi_test`
 - `test.json` stores metadata, publication state, questions, answers, scoring and relative asset paths
-- `images/cover.webp` is the catalog cover and the image surface behind the quiz panel
-- `images/background.webp` is the page background while the test is open
-- question and result images belong in their matching subfolders
+- `images/common/` is the general upload area for any shared test images
+- keep original uploaded filenames; do not rename files just to assign a role
+- `images/questions/` stores question-specific images
+- `images/results/` stores result-specific images
+- `test.json` references the exact selected filename and relative path for each role
+- the same file may be assigned to multiple roles when requested
 - media and files are optional; create subfolders only when needed
 - all asset paths in json are relative to the test folder
 - do not embed image data or base64 in json
@@ -75,8 +79,8 @@ add each new test json path to this manifest. the app fetches each listed json f
   "description": "это тестовый тест для тестового теста",
   "duration": "1 минута",
   "assets": {
-    "cover": "images/cover.webp",
-    "background": "images/background.webp"
+    "cover": "images/common/original_cover_file.jpg",
+    "background": "images/common/original_background_file.png"
   },
   "questions": [],
   "scoring": {
@@ -86,10 +90,12 @@ add each new test json path to this manifest. the app fetches each listed json f
 }
 ```
 
-- `assets.cover` is optional and points to the cover image
-- `assets.background` is optional and points to the test page background
-- `assets.cover` is also used as the quiz panel image surface
-- missing image files do not prevent the test from working; upload files at the declared paths when ready
+- `assets.cover` is optional and points to the catalog cover and quiz panel image
+- `assets.background` is optional and points to the page background while the test is open
+- paths may use any original filename and supported image extension
+- leave a role as `null` until an image is assigned
+- when the owner uploads images, identify files by their exact names and update only the relevant json paths
+- missing or unassigned image files do not prevent the test from working
 - use unique stable ids for tests, questions, answers and results
 
 ## publication
@@ -126,6 +132,8 @@ all user-facing website text must follow these rules:
 - do not add frameworks, build tools, dependencies or services without approval
 - keep test content separate from rendering logic
 - every test belongs in its own folder and is registered in `tests/index.json`
+- use `images/common/` as the general image drop folder; preserve original filenames
+- when the owner says which uploaded image has which role, map its exact path in `test.json`
 - preserve the current json schema and scoring behavior
 - keep new tests unpublished until reviewed
 - never claim a planned feature is implemented
