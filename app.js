@@ -24,8 +24,8 @@ function applyPageBackground(path) {
 
 function renderCatalog() {
   activeTest = null;
-  applyPageBackground("");
   const published = tests.filter(test => test.published === true);
+  applyPageBackground(published[0]?.assets?.background || "");
   app.innerHTML = `
     <section class="test-list" aria-label="доступные тесты">
       ${published.length ? published.map(test => `
