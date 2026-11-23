@@ -18,7 +18,7 @@ function assetUrl(path, test = activeTest) {
 
 function applyPageBackground(path) {
   document.body.style.backgroundImage = path
-    ? `linear-gradient(rgba(243,240,231,.78), rgba(243,240,231,.78)), url("${assetUrl(path)}")`
+    ? `linear-gradient(rgba(243,240,231,.28), rgba(243,240,231,.28)), url("${assetUrl(path)}")`
     : "";
 }
 
@@ -27,13 +27,9 @@ function renderCatalog() {
   applyPageBackground("");
   const published = tests.filter(test => test.published === true);
   app.innerHTML = `
-    <p class="eyebrow">коллекция</p>
-    <h1>найди свой тест</h1>
-    <p class="lead">небольшие тесты для проверки больших и маленьких вопросов</p>
     <section class="test-list" aria-label="доступные тесты">
       ${published.length ? published.map(test => `
-        <article class="test-card">
-          ${test.assets?.cover ? `<div class="test-card-cover" style="background-image:linear-gradient(90deg,rgba(0,0,0,.12),rgba(0,0,0,.02)),url('${escapeHtml(assetUrl(test.assets.cover, test))}')"></div>` : ""}
+        <article class="test-card" ${test.assets?.card_background ? 'style="background-image:linear-gradient(rgba(251,250,246,.84),rgba(251,250,246,.84)),url(\'' + escapeHtml(assetUrl(test.assets.card_background, test)) + '\')"' : ""}>
           <div class="test-card-content">
             <h2>${escapeHtml(test.title)}</h2>
             <p>${escapeHtml(test.description)}</p>
