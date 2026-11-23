@@ -11,7 +11,7 @@ function escapeHtml(value) {
 
 function renderCatalog() {
   activeTest = null;
-  const tests = Array.isArray(window.TESTS) ? window.TESTS : [];
+  const tests = Array.isArray(window.TESTS) ? window.TESTS.filter(test => test.published === true) : [];
   app.innerHTML = `
     <p class="eyebrow">Коллекция</p>
     <h1>Найдите свой тест.</h1>
