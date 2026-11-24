@@ -1,0 +1,304 @@
+{
+  "id": "demo_multi_scale",
+  "published": true,
+  "dev_tools": {
+    "enabled": true
+  },
+  "title": "как ты выбираешь и действуешь?",
+  "description": "демонстрационный тест с одиночным и множественным выбором, тремя шкалами и подробным отчётом",
+  "duration": "3 минуты",
+  "assets": {
+    "cover": null,
+    "background": null,
+    "card_background": null
+  },
+  "scales": [
+    {
+      "id": "analysis",
+      "title": "Аналитичность",
+      "description": "опора на факты, структуру и последовательное обдумывание"
+    },
+    {
+      "id": "emotion",
+      "title": "Эмоциональность",
+      "description": "внимание к чувствам, впечатлениям и отношениям"
+    },
+    {
+      "id": "action",
+      "title": "Деятельность",
+      "description": "ориентация на практику, действие и результат"
+    }
+  ],
+  "questions": [
+    {
+      "id": "q1",
+      "type": "single_choice",
+      "text": "Как ты обычно принимаешь важное решение?",
+      "answers": [
+        {
+          "id": "a1",
+          "text": "Собираю факты и сравниваю варианты",
+          "scores": {
+            "analysis": 1,
+            "emotion": 0.2,
+            "action": 0.4
+          }
+        },
+        {
+          "id": "a2",
+          "text": "Прислушиваюсь к своим ощущениям",
+          "scores": {
+            "analysis": 0.2,
+            "emotion": 1,
+            "action": 0.2
+          }
+        },
+        {
+          "id": "a3",
+          "text": "Выбираю то, что быстрее приведёт к результату",
+          "scores": {
+            "analysis": 0.4,
+            "emotion": 0.2,
+            "action": 1
+          }
+        },
+        {
+          "id": "a4",
+          "text": "Обсуждаю с людьми, которым доверяю",
+          "scores": {
+            "analysis": 0.4,
+            "emotion": 0.8,
+            "action": 0.4
+          }
+        },
+        {
+          "id": "a5",
+          "text": "Пробую первый подходящий вариант",
+          "scores": {
+            "analysis": 0.2,
+            "emotion": 0.4,
+            "action": 0.8
+          }
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "type": "multiple_choice",
+      "text": "Что тебе интереснее в новом проекте?",
+      "aggregation": "average",
+      "min_select": 1,
+      "answers": [
+        {
+          "id": "a1",
+          "text": "Разобраться, как всё устроено",
+          "scores": {
+            "analysis": 1,
+            "emotion": 0.1,
+            "action": 0.3
+          }
+        },
+        {
+          "id": "a2",
+          "text": "Понять, какие чувства он вызывает",
+          "scores": {
+            "analysis": 0.1,
+            "emotion": 1,
+            "action": 0.2
+          }
+        },
+        {
+          "id": "a3",
+          "text": "Сразу попробовать сделать прототип",
+          "scores": {
+            "analysis": 0.3,
+            "emotion": 0.2,
+            "action": 1
+          }
+        },
+        {
+          "id": "a4",
+          "text": "Обсудить идею с другими",
+          "scores": {
+            "analysis": 0.3,
+            "emotion": 0.8,
+            "action": 0.4
+          }
+        },
+        {
+          "id": "a5",
+          "text": "Составить план и список задач",
+          "scores": {
+            "analysis": 0.8,
+            "emotion": 0.2,
+            "action": 0.8
+          }
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "type": "single_choice",
+      "text": "Что сильнее всего раздражает в работе?",
+      "answers": [
+        {
+          "id": "a1",
+          "text": "Нелогичность и противоречия",
+          "scores": {
+            "analysis": 1,
+            "emotion": 0.2,
+            "action": 0.3
+          }
+        },
+        {
+          "id": "a2",
+          "text": "Холодное отношение и конфликты",
+          "scores": {
+            "analysis": 0.2,
+            "emotion": 1,
+            "action": 0.2
+          }
+        },
+        {
+          "id": "a3",
+          "text": "Бездействие и отсутствие результата",
+          "scores": {
+            "analysis": 0.3,
+            "emotion": 0.2,
+            "action": 1
+          }
+        },
+        {
+          "id": "a4",
+          "text": "Хаос, когда никто не понимает своей роли",
+          "scores": {
+            "analysis": 0.8,
+            "emotion": 0.4,
+            "action": 0.7
+          }
+        },
+        {
+          "id": "a5",
+          "text": "Когда приходится долго ждать",
+          "scores": {
+            "analysis": 0.3,
+            "emotion": 0.3,
+            "action": 0.9
+          }
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "type": "multiple_choice",
+      "text": "Какие действия ты скорее выберешь в незнакомом городе?",
+      "aggregation": "sum",
+      "min_select": 1,
+      "max_select": 3,
+      "answers": [
+        {
+          "id": "a1",
+          "text": "Изучу карту и заранее составлю маршрут",
+          "scores": {
+            "analysis": 0.9,
+            "emotion": 0.1,
+            "action": 0.5
+          }
+        },
+        {
+          "id": "a2",
+          "text": "Буду гулять и искать места по настроению",
+          "scores": {
+            "analysis": 0.1,
+            "emotion": 0.9,
+            "action": 0.6
+          }
+        },
+        {
+          "id": "a3",
+          "text": "Сразу отправлюсь к главной достопримечательности",
+          "scores": {
+            "analysis": 0.4,
+            "emotion": 0.3,
+            "action": 1
+          }
+        },
+        {
+          "id": "a4",
+          "text": "Спрошу местных, куда стоит пойти",
+          "scores": {
+            "analysis": 0.3,
+            "emotion": 0.8,
+            "action": 0.5
+          }
+        },
+        {
+          "id": "a5",
+          "text": "Выберу несколько точек и пойду исследовать",
+          "scores": {
+            "analysis": 0.6,
+            "emotion": 0.5,
+            "action": 0.9
+          }
+        }
+      ]
+    },
+    {
+      "id": "q5",
+      "type": "single_choice",
+      "text": "Как ты понимаешь, что день прошёл хорошо?",
+      "answers": [
+        {
+          "id": "a1",
+          "text": "Я узнал что-то новое и многое понял",
+          "scores": {
+            "analysis": 1,
+            "emotion": 0.3,
+            "action": 0.4
+          }
+        },
+        {
+          "id": "a2",
+          "text": "Было много приятных моментов и общения",
+          "scores": {
+            "analysis": 0.2,
+            "emotion": 1,
+            "action": 0.3
+          }
+        },
+        {
+          "id": "a3",
+          "text": "Я сделал то, что давно собирался",
+          "scores": {
+            "analysis": 0.4,
+            "emotion": 0.3,
+            "action": 1
+          }
+        },
+        {
+          "id": "a4",
+          "text": "Получилось и подумать, и почувствовать, и сделать",
+          "scores": {
+            "analysis": 0.7,
+            "emotion": 0.7,
+            "action": 0.7
+          }
+        },
+        {
+          "id": "a5",
+          "text": "Я хорошо отдохнул и никуда не торопился",
+          "scores": {
+            "analysis": 0.3,
+            "emotion": 0.8,
+            "action": 0.2
+          }
+        }
+      ]
+    }
+  ],
+  "scoring": {
+    "type": "multi_scale",
+    "multi_select_aggregation": "average",
+    "normalization": "available_max"
+  }
+}
