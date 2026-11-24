@@ -1,5 +1,6 @@
 {
   "tests": [
-    "testovyi_test/test.json"
+    "testovyi_test/test.json",
+    "demo_multi_scale/test.json"
   ]
 }
