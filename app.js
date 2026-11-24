@@ -68,9 +68,11 @@ function renderTestStart() {
     '<p class="eyebrow">тест</p><h1>' + escapeHtml(activeTest.title) + '</h1><p class="result-description">' + escapeHtml(activeTest.description || "") + '</p>' +
     '<p class="result-score">' + count + ' вопросов</p>' +
     (count ? '<button class="button" id="begin">начать тест</button>' : '<p class="dev-note">нет активных вопросов - включи хотя бы один вопрос</p>') +
+    (selectedAnswers.length ? '<button class="button secondary" id="resume-test">продолжить прохождение</button>' : '') +
     renderDevQuestionManager() + '</section>';
   document.getElementById("catalog").addEventListener("click", renderCatalog);
   document.getElementById("begin")?.addEventListener("click", startTest);
+  document.getElementById("resume-test")?.addEventListener("click", resumeTest);
   bindDevQuestionManager();
 }
 function bindDevQuestionManager() {
@@ -90,6 +92,16 @@ function bindDevQuestionManager() {
       document.getElementById("dev-copy-status").textContent = "не удалось скопировать";
     }
   });
+}
+function resumeTest() {
+  const oldQuestions = activeQuestions, oldAnswers = selectedAnswers;
+  const anchorId = oldQuestions[currentQuestion]?.id, oldIndex = currentQuestion;
+  activeQuestions = getVisibleQuestions();
+  selectedAnswers = activeQuestions.map(q => { const i = oldQuestions.findIndex(old => old.id === q.id); return i >= 0 ? oldAnswers[i] : (q.type === "multiple_choice" ? [] : null); });
+  const nextIndex = activeQuestions.findIndex(q => q.id === anchorId);
+  currentQuestion = nextIndex >= 0 ? nextIndex : Math.min(oldIndex, Math.max(0, activeQuestions.length - 1));
+  if (!activeQuestions.length) return renderTestStart();
+  renderQuestion();
 }
 function startTest() {
   activeQuestions = getVisibleQuestions();
@@ -198,13 +210,14 @@ function renderResult() {
     const out=calculateMultiScaleResult();
     app.innerHTML='<button class="back-link" id="home">← все тесты</button><section class="result-panel"><p class="eyebrow">тест завершён</p><h1>'+escapeHtml(out.topScale?.title||"твой профиль")+'</h1><p class="result-description">наиболее выраженное направление по ответам</p><div class="scale-results">'+
       out.scales.map(s=>'<div class="scale-result"><div class="scale-result-heading"><strong>'+escapeHtml(s.title)+'</strong><span>'+out.profile[s.id].percent+'%</span></div><div class="progress-track"><div class="progress-fill" style="width:'+out.profile[s.id].percent+'%"></div></div><p>'+escapeHtml(s.description||'')+'</p></div>').join('')+
-      '</div>'+renderDeveloperReport(out)+'<div class="result-actions"><button class="button" id="retry">пройти ещё раз</button></div></section>';
+      '</div>'+renderDeveloperReport(out)+renderDevQuestionManager()+'<div class="result-actions"><button class="button" id="retry">пройти ещё раз</button></div></section>';
   } else {
     const out=calculateLegacyResult(), result=out.result;
-    app.innerHTML='<button class="back-link" id="home">← все тесты</button><section class="result-panel"><p class="eyebrow">тест завершён</p><h1>'+escapeHtml(result?.title||"результат не определён")+'</h1><p class="result-score">'+out.score+' баллов</p><p class="result-description">'+escapeHtml(result?.description||"для этого результата пока не добавлено описание")+'</p><div class="result-actions"><button class="button" id="retry">пройти ещё раз</button></div></section>';
+    app.innerHTML='<button class="back-link" id="home">← все тесты</button><section class="result-panel"><p class="eyebrow">тест завершён</p><h1>'+escapeHtml(result?.title||"результат не определён")+'</h1><p class="result-score">'+out.score+' баллов</p><p class="result-description">'+escapeHtml(result?.description||"для этого результата пока не добавлено описание")+'</p>'+renderDevQuestionManager()+'<div class="result-actions"><button class="button" id="retry">пройти ещё раз</button></div></section>';
   }
   document.getElementById("home").addEventListener("click",renderCatalog);
   document.getElementById("retry").addEventListener("click",renderTestStart);
+  bindDevQuestionManager();
 }
 async function loadTests() {
   try {
