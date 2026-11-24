@@ -96,3 +96,13 @@ h1 { margin: 0; font-size: clamp(34px, 6vw, 52px); line-height: 1.08; letter-spa
 .dev-report h3 { margin: 18px 0 10px; font-size: 15px; }
 .dev-scale-row { padding: 7px 0; font-size: 13px; }
 @media (max-width: 620px) { .dev-answer { flex-direction: column; gap: 3px; } }
+
+.dev-open { display:block; margin: 0 0 14px auto; }
+.dev-question-manager { margin-top: 24px; }
+.dev-count { margin: 12px 0; font-size: 13px; font-weight: 700; }
+.dev-question-toggle { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 0; border-top:1px solid var(--line); }
+.dev-question-toggle-copy { display:grid; gap:4px; min-width:0; }
+.dev-question-toggle-copy strong { font-size:13px; }
+.dev-question-toggle-copy span, .dev-copy-status { color:var(--muted); font-size:11px; }
+.dev-toggle { flex:0 0 auto; }
+.dev-copy-status { display:block; margin-top:8px; }
